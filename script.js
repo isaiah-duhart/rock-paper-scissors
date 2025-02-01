@@ -1,54 +1,72 @@
 const choices = ["rock", "paper", "scissors"]
+ROCK = 0
+PAPER = 1
+SCISSORS = 2
 let userScore = 0
 let computerScore = 0
 
-function getComputerChoice(){
-    const index = Math.floor(Math.random() * 3)
-
-    return choices[index]
-}
-
-function playRound(userChoice, computerChoice){
-    const userChoiceIndex = choices.indexOf(userChoice)
-    const computerChoiceIndex = choices.indexOf(computerChoice)
+function playRound(userChoiceIndex){
+    const computerChoiceIndex = Math.floor(Math.random() * 3)
 
     switch (userChoiceIndex - computerChoiceIndex){
         case 0:
-            console.log(`tie! ${userChoice} ties ${computerChoice}`)
+            alert(`tie! ${choices[userChoiceIndex]} ties ${choices[computerChoiceIndex]}`)
             break
         case 1:
         case -2:
-            console.log(`you win! ${userChoice} beats ${computerChoice}`)
+            alert(`you win! ${choices[userChoiceIndex]} beats ${choices[computerChoiceIndex]}`)
             userScore++
             break
         case -1:
         case 2:
-            console.log(`you lose! ${computerChoice} beats ${userChoice}`)
+            alert(`you lose! ${choices[computerChoiceIndex]} beats ${choices[userChoiceIndex]}`)
             computerScore++
             break
         default:
-            console.log(`Something went wrong...
-            userChoice: ${userChoice} index: ${userChoiceIndex}
-            computerChoice: ${computerChoice} index: ${computerChoiceIndex}`)
+            alert(`Something went wrong...
+            userChoice: ${choices[userChoiceIndex]} index: ${userChoiceIndex}
+            computerChoice: ${choices[computerChoiceIndex]} index: ${computerChoiceIndex}`)
             break
     }
 }
 
-function playGame(){
-    for (let i = 0; i < 5; i++){
-        const userChoice = prompt("enter rock, paper, or scissors:").toLowerCase()
+function updateScore(){
+    const userScoreElement = document.querySelector("#userScore")
+    const computerScoreElement = document.querySelector("#computerScore")
 
-        if (choices.includes(userChoice)){
-            const computerChoice = getComputerChoice()
-            playRound(userChoice, computerChoice)
-        } else {
-            console.log(`${userChoice} is not rock, paper, or scissors, enter valid choice`)
-        }
-    }
+    userScoreElement.textContent = userScore
+    computerScoreElement.textContent = computerScore
 
-    console.log(`game over!
-    you won ${userScore} rounds
-    computer won ${computerScore} rounds`)
+    if (userScore < 5 && computerScore < 5)
+        return
+
+    if (userScore >= 5)
+        alert("Game OVER! You won!")
+    else if (computerScore >= 5)
+        alert("Game OVER! You lost!")
+
+    userScore = 0
+    computerScore = 0
+
+    userScoreElement.textContent = 0
+    computerScoreElement.textContent = 0
 }
 
-playGame()
+const menu = document.querySelector(".menu")
+
+menu.addEventListener("click", (event) => {
+    switch(event.target.id){
+        case "rock":
+            playRound(ROCK)
+            break
+        case "paper":
+            playRound(PAPER)
+            break
+        case "scissors":
+            playRound(SCISSORS)
+            break
+        default:
+            alert(`ERORR: ${event.id} is not rock, paper, or scissors, select valid choice`)
+    }
+    updateScore()
+})
